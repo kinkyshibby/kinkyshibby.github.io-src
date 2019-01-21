@@ -1,0 +1,10 @@
+{
+  "name": "scraper",
+  "version": "0.0.1",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "clean": "rm -f cache.html audio_list.html audio_list.json",
+    "start": "node index.js"
+  }
+}

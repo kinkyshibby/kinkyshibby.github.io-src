@@ -1,0 +1,13 @@
+{
+  "name": "viewer",
+  "version": "0.0.1",
+  "main": "index.html",
+  "private": true,
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.11.0"
+  }
+}
