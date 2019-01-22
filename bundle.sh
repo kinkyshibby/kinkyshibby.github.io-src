@@ -8,6 +8,7 @@ cd ../viewer
 yarn
 ./templater.py
 yarn build
+./slimmer.py
 
 cd ../
 
