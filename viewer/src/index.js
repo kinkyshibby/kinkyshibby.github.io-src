@@ -24,6 +24,6 @@
     }
   }
 
-  input_element.addEventListener('input', debounce(() => stylesheet.innerHTML = get_multikeyword_selector(input_element.value.trim().toLowerCase()), 100))
+  input_element.addEventListener('input', debounce(() => stylesheet.innerHTML = get_multikeyword_selector(input_element.value.trim().toLowerCase()), 10))
   document.getElementById('button_random').addEventListener('click', () => stylesheet.innerHTML = `.search-result:nth-child(${Math.trunc(Math.random() * document.getElementsByClassName('search-result').length) + 1}) { display: grid !important; }`)
 }
