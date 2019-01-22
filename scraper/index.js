@@ -41,23 +41,25 @@ async function scrape_webpage(file_path) {
   const audio_regex = /<div class="sound-details"><a href="([^"]+)">([^<>]*)<\/a><\/br><span class="soundDescription">([^<>]*)<\/span><\/br><span class="playCount">Play Count: (\d+)<\/span><\/div>/g
   const audio_list = []
   for (let groups = []; groups = audio_regex.exec(file_content);) {
-    audio_list.push({
-      link: groups[1],
-      title: groups[2].replace(/,/g, ''),
-      description: groups[3],
-      play_count: groups[4]
-    })
+    const link = groups[1]
+    let title = groups[2].replace(/,/g, '')
+    const description = groups[3]
+    const play_count = groups[4]
+    const tags = (title.match(/\[[^\[\]]+\]/g) || []).map(t => t.slice(1, -1))
+    title = title.replace(/\[[^\[\]]*\]/g, '').replace(/\s+/g, ' ').trim()
+    audio_list.push({ link, title, description, play_count, tags })
   }
   return audio_list
 }
 
 function build_audio_list_markup() {
   fs.writeFile('audio_list.html', require('./audio_list.json').reduce((lhs, audio) =>
-    lhs + `<div class="search-result" data-title="${audio.title.toLowerCase()}">
-            <a class="title" href="${audio.link}" title="${audio.link}" target="_blank">${audio.title}</a>
-            <div class="play-count"><i class="fas fa-eye"></i> ${audio.play_count}</div>
-            <div class="description">${audio.description}</div>
-          </div>`, ''), 'utf8', err => { if (err) throw err })
+    lhs + `<div class="search-result" data-title="${audio.title.toLowerCase() + ' ' + audio.tags.join(' ').toLowerCase()}">
+             <a class="title" href="${audio.link}" title="${audio.link}" target="_blank">${audio.title}</a>
+             <div class="play-count"><i class="fas fa-eye"></i> ${audio.play_count}</div>
+             <div class="description">${audio.description}</div>
+             <div class="tag-container">${audio.tags.map(t => `<div class="tag">${t}</div>`).join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')}</div>
+           </div>`, ''), 'utf8', err => { if (err) throw err })
 }
 
 (async () => {

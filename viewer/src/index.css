@@ -67,7 +67,8 @@ body {
   box-shadow: var(--shadow);
   grid-template-columns: 1fr 8em;
   grid-template-areas: 'title play_count'
-    'description description';
+                       'description description'
+                       'tags tags';
 }
 
 /*.search-result:nth-child(odd) {
@@ -92,6 +93,18 @@ body {
   grid-area: description;
   color: #c3c3c3;
   padding-top: 0.5em;
+}
+
+.tag-container {
+  grid-area: tags;
+  font-size: smaller;
+  font-style: italic;
+  color: #8888;
+  padding-top: 0.5em;
+}
+
+.tag {
+  display: inline;
 }
 
 a:link, a:active {
