@@ -4,6 +4,7 @@
 
 * {
   font-family: 'Roboto', sans-serif;
+  text-shadow: 0px 1px 2px #00000099;
 }
 
 html,
@@ -93,18 +94,26 @@ body {
   grid-area: description;
   color: #c3c3c3;
   padding-top: 0.5em;
+  word-wrap: break-word;
 }
 
 .tag-container {
+  user-select: none;
   grid-area: tags;
   font-size: smaller;
   font-style: italic;
-  color: #8888;
+  color: #777;
   padding-top: 0.5em;
 }
 
 .tag {
   display: inline;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tag:hover {
+  text-decoration: underline;
 }
 
 a:link, a:active {

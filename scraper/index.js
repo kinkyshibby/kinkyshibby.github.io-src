@@ -58,7 +58,7 @@ function build_audio_list_markup() {
              <a class="title" href="${audio.link}" title="${audio.link}" target="_blank">${audio.title}</a>
              <div class="play-count"><i class="fas fa-eye"></i> ${audio.play_count}</div>
              <div class="description">${audio.description}</div>
-             <div class="tag-container">${audio.tags.map(t => `<div class="tag">${t}</div>`).join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')}</div>
+             <div class="tag-container">${audio.tags.map(t => `<div class="tag" onclick="append_tag(event)">${t}</div>`).join('&nbsp;&nbsp;&middot;&nbsp; ')}</div>
            </div>`, ''), 'utf8', err => { if (err) throw err })
 }
 
