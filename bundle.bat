@@ -1,5 +1,5 @@
 cd scraper
-:: yarn clean & :: Clear cache.html and re-download from soundgasm
+:: CALL yarn clean & :: Clear cache.html and re-download from soundgasm
 CALL yarn start
 
 cd ../viewer
