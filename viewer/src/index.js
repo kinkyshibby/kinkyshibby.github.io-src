@@ -3,17 +3,17 @@ let compact_mode = 'localStorage' in window && localStorage.compact || 0
 const get_compact_css = () => (compact_mode == 0 ? '' : `
   .description, .tag-container {
     padding: 0;
-    white-space: nowrap; 
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .tag-container { padding: 0.2em 0.8em; }
   .play-count { display: none; }
   .search-result {
     margin: 0;
     padding: .5em;
-    grid-gap: .5em;
     grid-template-columns: auto 1fr;
-    grid-template-rows: 1em 1.5em;
+    grid-template-rows: 1.5em 1.5em;
     grid-template-areas:
       "title tags"
       "description description";
@@ -29,7 +29,8 @@ const input_element = document.getElementById('search_input')
 input_element.focus()
 
 const search_term = decodeURI(location.search).match(/s=([^&]*)/)
-if (search_term) input_element.value = search_term[1].trim()
+if (search_term)
+  input_element.value = search_term[1].trim()
 
 const get_keyword_selector = keyword => (keyword = keyword.trim()).length === 0 ? '' : `[data-title*="${keyword}"]`
 const get_multikeyword_selector = value => `.search-result${value.length === 0 ? '' : value.split(',').reduce((lhs, term) => lhs + get_keyword_selector(term), '')} { display: grid !important; }`
@@ -57,10 +58,14 @@ document.getElementById('button_compact').addEventListener('click', () => {
   compact_mode ^= 1
   'localStorage' in window && (localStorage.compact = compact_mode)
   compact_css = get_compact_css()
-  input_element.dispatchEvent(new Event('input'), { 'bubbles': true })
+  input_element.dispatchEvent(new Event('input'), {
+    'bubbles': true
+  })
 })
 
 window.append_tag = ev => {
   input_element.value += `${input_element.value.trim().length === 0 ? '' : ', '}${(ev.target || ev.srcElement).innerHTML}`
-  input_element.dispatchEvent(new Event('input'), { 'bubbles': true })
+  input_element.dispatchEvent(new Event('input'), {
+    'bubbles': true
+  })
 }
