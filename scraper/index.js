@@ -1,4 +1,5 @@
 const fs = require('fs')
+const fsPromises = fs.promises
 const https = require('https')
 
 const webpage_url = 'https://www.soundgasm.net/u/kinkyshibby'
@@ -22,12 +23,12 @@ function fetch(url) {
 
 async function download_webpage(url, file_path) {
   const page_content = await fetch(url)
-  return await new Promise((resolve, reject) => {
-    fs.writeFile(file_path, page_content, 'utf8', err => {
-      if (err) reject(err)
-      resolve(file_path)
-    })
-  })
+
+  const file = await fsPromises.open(file_path, 'w')
+  await file.writeFile(page_content, 'utf8')
+  file.close()
+
+  return file_path
 }
 
 async function scrape_webpage(file_path) {
@@ -66,7 +67,23 @@ function build_audio_list_markup() {
   if (!fs.existsSync(cache_file_path))
     await download_webpage(webpage_url, cache_file_path)
 
-  fs.writeFile('audio_list.json', JSON.stringify(await scrape_webpage(cache_file_path), null, 2), 'utf8', err => {
+  const audio_list = await scrape_webpage(cache_file_path)
+
+  if (fs.existsSync('audio_list.json')) {
+    const file = await fsPromises.open('audio_list.json', 'r')
+    const res = JSON.parse(await file.readFile('utf8'))
+    file.close()
+    if (res.length === audio_list.length) {
+      console.log('No new audios.')
+    } else {
+      console.log('New audio found!')
+      const file = await fsPromises.open('.new_audio', 'w')
+      await file.writeFile('', 'utf8')
+      file.close()
+    }
+  }
+
+  fs.writeFile('audio_list.json', JSON.stringify(audio_list, null, 2), 'utf8', err => {
     if (err) throw err
     build_audio_list_markup()
   })
