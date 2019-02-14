@@ -63,6 +63,28 @@ document.getElementById('button_compact').addEventListener('click', () => {
   })
 })
 
+document.getElementById('dropdown_sort').addEventListener('input', ev => {
+  
+  const df = new DocumentFragment()
+
+  const results = Array.from(document.getElementsByClassName('search-result'))
+  results.forEach(el => el.parentElement.removeChild(el))
+
+  let sort_func
+  switch (ev.target.value) {
+    case 'recent':
+      sort_func = (a, b) => parseInt(a.getAttribute('data-release-order'), 10) - parseInt(b.getAttribute('data-release-order'), 10)
+      break
+
+    case 'views':
+      sort_func = (a, b) => parseInt(b.getAttribute('data-play-count'), 10) - parseInt(a.getAttribute('data-play-count'), 10)
+      break
+
+  }
+  results.sort(sort_func).forEach(el => df.appendChild(el))
+  document.getElementById('search_result_container').appendChild(df)
+})
+
 window.append_tag = ev => {
   input_element.value += `${input_element.value.trim().length === 0 ? '' : ', '}${(ev.target || ev.srcElement).innerHTML}`
   input_element.dispatchEvent(new Event('input'), {

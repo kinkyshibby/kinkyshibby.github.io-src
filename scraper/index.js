@@ -54,8 +54,8 @@ async function scrape_webpage(file_path) {
 }
 
 function build_audio_list_markup() {
-  fs.writeFile('audio_list.html', require('./audio_list.json').reduce((lhs, audio) =>
-    lhs + `<div class="search-result" data-title="${audio.title.toLowerCase() + ' ' + audio.tags.join(' ').toLowerCase()}">
+  fs.writeFile('audio_list.html', require('./audio_list.json').reduce((lhs, audio, i) =>
+    lhs + `<div class="search-result" data-title="${audio.title.toLowerCase() + ' ' + audio.tags.join(' ').toLowerCase()}" data-release-order="${i}" data-play-count="${audio.play_count}<">
              <a class="title" href="${audio.link}" title="${audio.link}" target="_blank">${audio.title}</a>
              <div class="play-count"><i class="fas fa-eye"></i> ${audio.play_count}</div>
              <div class="description">${audio.description}</div>

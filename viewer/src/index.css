@@ -30,7 +30,7 @@ body {
 .search-input-container {
   grid-area: search-input;
   display: grid;
-  grid-template-columns: 3em 1fr 3em 3em;
+  grid-template-columns: 3em 1fr 3em 3em 8em;
   align-items: center;
   text-align: center;
   margin: 0 1em;
@@ -41,6 +41,15 @@ body {
 
 .search-input-container i {
   user-select: none;
+}
+
+.search-input-container select {
+  position: relative;
+  height: 100%;
+  background-color: #333;
+  color: #c3c3c3;
+  border: none;
+  margin: 0 1em;
 }
 
 .search-input {
