@@ -1,7 +1,7 @@
 #!/bin/sh
 
 cd scraper
-#yarn clean # Clear cache and re-download from soundgasm
+yarn clean # Clear cache and re-download from soundgasm
 yarn start
 
 cd ../viewer
@@ -15,9 +15,9 @@ cd ../
 cp viewer/dist/index.html .
 
 if [ -f scraper/.new_audio ]; then
-  echo "New audio found, publishing..."
+  echo "$(date) : Found new audio!" >> log.txt
   rm scraper/.new_audio
-  #./publish.sh
+  ./publish.sh
 else
-  echo "No new audios found."
+  echo "$(date) : No new audios found." >> log.txt
 fi
