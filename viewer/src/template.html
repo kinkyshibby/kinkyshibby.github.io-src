@@ -8,7 +8,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132964856-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'UA-132964856-1');
   </script>
@@ -23,16 +23,18 @@
 </head>
 
 <body>
-  <div class="search-input-container">
-    <i class="fas fa-search icon-search"></i>
-    <input id="search_input" class="search-input" type="text" placeholder="Search...">
-    <i id="button_random" class="fas fa-dice icon-random" title="Pick a random audio 🎲"></i>
-    <i id="button_compact" class="fas fa-compress-arrows-alt" title="Compact mode"></i>
-    <select id="dropdown_sort">
-      <option value="recent">Most Recent</option>
-      <option value="views">Most Viewed</option>
-    </select>
-  </div>
+  <header>
+    <div class="search-input-container">
+      <i class="fas fa-search icon-search"></i>
+      <input id="search_input" class="search-input" type="text" placeholder="Search...">
+      <i id="button_random" class="fas fa-dice icon-random" title="Pick a random audio 🎲"></i>
+      <i id="button_compact" class="fas fa-compress-arrows-alt" title="Compact mode"></i>
+      <select id="dropdown_sort">
+        <option value="recent">Most Recent</option>
+        <option value="views">Most Viewed</option>
+      </select>
+    </div>
+  </header>
   <div id="search_result_container" class="search-result-container">
     <!--import ../../scraper/audio_list.html-->
   </div>
