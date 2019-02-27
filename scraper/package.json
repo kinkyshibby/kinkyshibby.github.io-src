@@ -6,5 +6,8 @@
   "scripts": {
     "clean": "rm -f cache.html audio_list.html .new_audio",
     "start": "node index.js"
+  },
+  "dependencies": {
+    "googleapis": "27"
   }
 }

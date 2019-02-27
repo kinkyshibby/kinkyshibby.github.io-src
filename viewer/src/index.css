@@ -98,10 +98,10 @@ header {
   margin-top: 0;
   background-color: #333;
   box-shadow: var(--shadow);
-  grid-template-columns: 1fr 8em;
-  grid-template-areas: 'title play_count'
-                       'description description'
-                       'tags tags';
+  grid-template-columns: 1fr 8em 8em;
+  grid-template-areas: 'title reddit play_count'
+                       'description description description'
+                       'tags tags tags';
 }
 
 .title {
@@ -113,6 +113,12 @@ header {
 
 .play-count {
   grid-area: play_count;
+  text-align: right;
+  padding: 0 0.5em;
+}
+
+.gwa-link {
+  grid-area: reddit;
   text-align: right;
   padding: 0 0.5em;
 }

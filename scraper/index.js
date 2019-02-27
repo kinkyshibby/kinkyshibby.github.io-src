@@ -31,6 +31,12 @@ async function download_webpage(url, file_path) {
   return file_path
 }
 
+function get_soundgasm_id(url) {
+  url = url.toLowerCase()
+  const delim = 'soundgasm.net/u/kinkyshibby/'
+  return url.substr(url.indexOf(delim) + delim.length)
+}
+
 async function scrape_webpage(file_path) {
   const file_content = await new Promise((resolve, reject) => {
     fs.readFile(file_path, (err, data) => {
@@ -39,16 +45,33 @@ async function scrape_webpage(file_path) {
     })
   })
 
+  const sheet_content = await new Promise((resolve, reject) => {
+    fs.readFile('sheet-data.json', (err, data) => {
+      if (err) reject(err)
+      resolve(data)
+    })
+  })
+
+  const sheet_json = JSON.parse(sheet_content)
+  const SOUNDGASMLINK = sheet_json.headers['SOUNDGASMLINK']
+  const GWALINK = sheet_json.headers['GWALINK']
+  const reddit_links = {}
+
+  for (const row of sheet_json.rows)
+    if (row[GWALINK].replace(/\?/g, '').trim().length > 0)
+      reddit_links[get_soundgasm_id(row[SOUNDGASMLINK])] = row[GWALINK]
+
   const audio_regex = /<div class="sound-details"><a href="([^"]+)">([^<>]*)<\/a><\/br><span class="soundDescription">([^<>]*)<\/span><\/br><span class="playCount">Play Count: (\d+)<\/span><\/div>/g
   const audio_list = []
   for (let groups = []; groups = audio_regex.exec(file_content);) {
-    const link = groups[1]
-    let title = groups[2].replace(/,/g, '')
+    const soundgasm_link = groups[1]
+    const reddit_link = reddit_links[get_soundgasm_id(soundgasm_link)]
+    let title = groups[2].replace(/,|"/g, '')
     const description = groups[3]
     const play_count = groups[4]
     const tags = (title.match(/\[[^\[\]]+\]/g) || []).map(t => t.slice(1, -1))
     title = title.replace(/\[[^\[\]]*\]/g, '').replace(/\s+/g, ' ').trim()
-    audio_list.push({ link, title, description, play_count, tags })
+    audio_list.push({ link: soundgasm_link, title, description, play_count, tags, gwa: reddit_link })
   }
   return audio_list
 }
@@ -57,6 +80,7 @@ function build_audio_list_markup() {
   fs.writeFile('audio_list.html', require('./audio_list.json').reduce((lhs, audio, i) =>
     lhs + `<div class="search-result" data-title="${audio.title.toLowerCase() + ' ' + audio.tags.join(' ').toLowerCase()}" data-release-order="${i}" data-play-count="${audio.play_count}<">
              <a class="title" href="${audio.link}" title="${audio.link}" target="_blank">${audio.title}</a>
+             <div class="gwa-link">${ audio.gwa !== undefined ? `<a href="${audio.gwa}" target="_blank"><i class="fab fa-reddit-alien"></i> Reddit</a>` : ''}</div>
              <div class="play-count"><i class="fas fa-eye"></i> ${audio.play_count}</div>
              <div class="description">${audio.description}</div>
              <div class="tag-container">${audio.tags.map(t => `<div class="tag" onclick="append_tag(event)">${t}</div>`).join('&nbsp;&nbsp;&middot;&nbsp; ')}</div>
