@@ -98,7 +98,7 @@ header {
   margin-top: 0;
   background-color: #333;
   box-shadow: var(--shadow);
-  grid-template-columns: 1fr 8em 8em;
+  grid-template-columns: 1fr 6em 6em;
   grid-template-areas: 'title reddit play_count'
                        'description description description'
                        'tags tags tags';
