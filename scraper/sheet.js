@@ -8,7 +8,7 @@ sheets.spreadsheets.values.get({
   range: 'A2:S',
 }, (err, res) => {
   if (err) return console.log('The API returned an error: ' + err)
-  const rows = res.data.values
+  const rows = res.data.values.filter(r => r.length)
   if (rows.length) {
     first_row = rows.shift()
     headers = {}

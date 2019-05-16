@@ -4,10 +4,13 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "clean": "rm -f cache.html audio_list.html .new_audio",
+    "clean": "rm -f cache.html audio_list.html patreon_post.html",
     "start": "node sheet.js && node index.js"
   },
   "dependencies": {
-    "googleapis": "27"
+    "cheerio": "^1.0.0-rc.3",
+    "googleapis": "27",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
   }
 }

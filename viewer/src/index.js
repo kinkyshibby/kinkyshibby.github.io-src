@@ -1,3 +1,5 @@
+addEventListener('DOMContentLoaded', () => {
+
 let compact_mode = 'localStorage' in window && localStorage.compact || 0
 
 const get_compact_css = () => (compact_mode == 0 ? '' : `
@@ -37,7 +39,7 @@ const get_multikeyword_selector = value => `.search-result${value.length === 0 ?
 
 const stylesheet = document.createElement('style')
 stylesheet.type = 'text/css'
-stylesheet.innerHTML = compact_css + get_multikeyword_selector(input_element.value)
+stylesheet.innerHTML = compact_css + get_multikeyword_selector(input_element.value.trim().toLowerCase())
 document.head.appendChild(stylesheet)
 
 const debounce = (func, delay) => {
@@ -64,7 +66,7 @@ document.getElementById('button_compact').addEventListener('click', () => {
 })
 
 document.getElementById('dropdown_sort').addEventListener('input', ev => {
-  
+
   const df = new DocumentFragment()
 
   const results = Array.from(document.getElementsByClassName('search-result'))
@@ -72,6 +74,7 @@ document.getElementById('dropdown_sort').addEventListener('input', ev => {
 
   let sort_func
   switch (ev.target.value) {
+
     case 'recent':
       sort_func = (a, b) => parseInt(a.getAttribute('data-release-order'), 10) - parseInt(b.getAttribute('data-release-order'), 10)
       break
@@ -91,3 +94,5 @@ window.append_tag = ev => {
     'bubbles': true
   })
 }
+
+})

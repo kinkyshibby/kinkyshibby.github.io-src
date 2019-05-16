@@ -8,4 +8,6 @@ publish.sh
 log.txt
 scraper/api_key.json
 scraper/sheet-data.json
-
+last_run.log
+scraper/yarn-error.log
+viewer/dist/
