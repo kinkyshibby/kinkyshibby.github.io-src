@@ -30,9 +30,9 @@ let compact_css = get_compact_css()
 const input_element = document.getElementById('search_input')
 input_element.focus()
 
-const search_term = decodeURI(location.search).match(/s=([^&]*)/)
+const search_term = location.search.match(/s=([^&]*)/)
 if (search_term)
-  input_element.value = search_term[1].trim()
+  input_element.value = decodeURIComponent(search_term[1]).trim()
 
 const get_keyword_selector = keyword => (keyword = keyword.trim()).length === 0 ? '' : `[data-title*="${keyword}"]`
 const get_multikeyword_selector = value => `.search-result${value.length === 0 ? '' : value.split(',').reduce((lhs, term) => lhs + get_keyword_selector(term), '')} { display: grid !important; }`
