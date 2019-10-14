@@ -12,13 +12,15 @@ const patreon_post_url = 'https://www.reddit.com/r/ShibbySays/comments/ay0gaw/re
 const patreon_file_path = 'patreon_post.html'
 
 function clean_title(str) {
-  const regex = /\]?[ ]*([^\[\]]+)[ ]*\[/gm
-  let matches = [], m
-  while (m = regex.exec(str)) matches.push(m[1].trim())
-  if (matches.length) return matches.sort((a, b) => b.length - a.length)[0].trim()
-  matches = str.match(/\[[^\[\]]+\]/g)
-  if (matches) return matches.map(t => t.slice(1, -1)).sort((a, b) => b.length - a.length)[0].trim()
-  return str.trim()
+  const regex = /\]?[ ]*([^\[\]]+)[ ]*\[/m
+  let m = str.match(regex);
+  if (m) return m[1].trim();
+  return str.replace(/\[.*?\]/g, '').trim()
+}
+
+function extract_tags(str) {
+  const unique_tags = new Set(str.match(/\[[^\[\]]+\]/g) || [])
+  return Array.from(unique_tags).map(t => t.slice(1, -1))
 }
 
 // Native fetch does not support https
@@ -26,7 +28,7 @@ function fetch(url) {
   return new Promise((resolve, reject) => {
     https.get(url, result => {
       if (result.statusCode !== 200) {
-        console.error(`Failed to get ${url} with status code ${result.statusCode}.`, result)
+        reject(`Failed to get ${url} with status code ${result.statusCode}.`)
         return
       }
       result.setEncoding('utf8')
@@ -41,14 +43,19 @@ async function download_webpage(url, file_path, cookie_str) {
   let options = { url }
   if (cookie_str) {
     options.jar = request.jar()
-    options.jar.setCookie(request.cookie(cookie_str), url)
+    options.jar.setCookie(request.cookie(cookie_str), url, { ignoreError: true })
   }
-  const page_content = await request(options)
-  // const page_content = await fetch(url)
 
-  const file = await fsPromises.open(file_path, 'w')
-  await file.writeFile(page_content, 'utf8')
-  file.close()
+  try {
+    const page_content = await request(options)
+    // const page_content = await fetch(url)
+
+    const file = await fsPromises.open(file_path, 'w')
+    await file.writeFile(page_content, 'utf8')
+    file.close()
+  } catch (err) {
+    throw new Error(`${err}: Failed to download webpage "${url}" to "${file_path}"`)
+  }
 
   return file_path
 }
@@ -91,7 +98,7 @@ async function scrape_webpage(file_path) {
     let title = groups[2].replace(/,|"/g, '')
     const description = groups[3]
     const play_count = groups[4]
-    const tags = (title.match(/\[[^\[\]]+\]/g) || []).map(t => t.slice(1, -1))
+    const tags = extract_tags(`${title} ${description}`)
     // title = title.replace(/\[[^\[\]]*\]/g, '').replace(/\s+/g, ' ').trim()
     title = clean_title(title)
     audio_list.push({ link: soundgasm_link, title, description, play_count, tags, gwa: reddit_link })
@@ -118,7 +125,7 @@ async function scrape_patreon_post(file_path) {
       if (title.includes('[')) {
         const link = doc(elm).attr('href')
         const description = doc(elm).parent().next().text()
-        const tags = ['Patreon Only', ...(title.match(/\[[^\[\]]+\]/g) || []).map(t => t.slice(1, -1))]
+        const tags = ['Patreon Only', ...extract_tags(`${title} ${description}`)]
         // title = title.replace(/\[[^\[\]]*\]/g, '').replace(/\s+/g, ' ').trim()
         title = clean_title(title)
         audio_list.push({
@@ -147,13 +154,25 @@ function build_audio_list_markup() {
 }
 
 (async () => {
-  if (!fs.existsSync(cache_file_path))
-    await download_webpage(webpage_url, cache_file_path)
+  if (!fs.existsSync(cache_file_path)) {
+    try {
+      await download_webpage(webpage_url, cache_file_path)
+    } catch (err) {
+      console.error(err)
+      return
+    }
+  }
 
   let audio_list = await scrape_webpage(cache_file_path)
 
-  if (!fs.existsSync(patreon_file_path))
-    await download_webpage(patreon_post_url, patreon_file_path, 'over18=1')
+  if (!fs.existsSync(patreon_file_path)) {
+    try {
+      await download_webpage(patreon_post_url, patreon_file_path, 'over18=1')
+    } catch (err) {
+      console.error(err)
+      return
+    }
+  }
 
   const patreon_audios = await scrape_patreon_post(patreon_file_path)
   audio_list = [...audio_list, ...patreon_audios]
