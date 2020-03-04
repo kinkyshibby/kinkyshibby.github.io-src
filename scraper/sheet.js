@@ -4,7 +4,7 @@ const sheets = google.sheets({ version: 'v4', auth: api_key })
 const fs = require('fs')
 
 sheets.spreadsheets.values.get({
-  spreadsheetId: '1OgHy3c5Zed7N7JPu6elRwkyQStVDed-ESEqu-pmOfS8',
+  spreadsheetId: '1aPp7AiPvMh-l9lZ3V9BGzPnHUgcYOM4jZ59zAzUj7Dw',
   range: 'A2:S',
 }, (err, res) => {
   if (err) return console.log('The API returned an error: ' + err)
